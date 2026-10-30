@@ -1,0 +1,34 @@
+[package]
+name = "rift_attack"
+version = "1.0.0"
+edition = "2021"
+description = "RIFT ATTACK: Void Marines - a cosmic-horror reboot of the Heli Attack 2 formula"
+license = "MIT"
+build = "build.rs"
+
+[[bin]]
+name = "RiftAttack"
+path = "src/main.rs"
+
+[features]
+default = ["audio"]
+# Audio is on by default. `--no-default-features` builds a silent version
+# (handy on Linux boxes without ALSA headers).
+audio = ["macroquad/audio"]
+
+[dependencies]
+macroquad = { version = "0.4", default-features = false }
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+# keep unwinding: if Windows has no audio device, only the audio thread dies, not the game
+panic = "unwind"
+strip = true
+
+[profile.dev.package."*"]
+opt-level = 2
+
+[build-dependencies]
+embed-resource = "3.0.12"
